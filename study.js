@@ -541,8 +541,8 @@
       items: [
         { type: "radio", name: "MC1", text: "Did the app screen say anything about the coins' federal status?",
           options: [[1, "Yes, that the issuers are federally supervised"], [2, "Yes, that the issuers are not federally supervised"], [3, "No, it said nothing about federal status"], [4, "I don't remember"]] },
-        { type: "radio", name: "MC2", text: "Did the app screen say whether the coins are FDIC-insured?",
-          options: [[1, "Yes, that they are FDIC-insured"], [2, "Yes, that they are not FDIC-insured"], [3, "No, it said nothing about whether the coins are insured"], [4, "I don't remember"]] },
+        { type: "radio", name: "MC2", text: "Did the app screen say whether the coins themselves are FDIC-insured? We mean the coins, not the companies behind them.",
+          options: [[1, "Yes, that the coins are FDIC-insured"], [2, "Yes, that the coins are not FDIC-insured"], [3, "No, it said nothing about whether the coins are insured"], [4, "I don't remember"]] },
         { type: "radio", name: "LOOKUP", text: "Did you look up any information while answering, for example online or with an AI assistant? Your answer will not affect your payment.",
           options: [[1, "Yes"], [2, "No"]] }
       ]
