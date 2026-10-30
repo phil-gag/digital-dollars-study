@@ -621,6 +621,10 @@
 
   // ---------- start ----------
   var T0 = Date.now();
+  if (!TEST && !C.datapipeId) {
+    app.innerHTML = '<div class="panel"><h1>Not open yet</h1><p>This study is not open yet. Please return it on Prolific; you will not be penalised.</p></div>';
+    return;
+  }
   pages.push(consentPage());
   render();
 })();
