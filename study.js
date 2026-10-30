@@ -49,10 +49,10 @@
 
   // ---------- stimuli ----------
   var COINS = {
-    NFD: { name: "Northfield Dollar", tk: "NFD", art: "An", issuer: "Northfield Digital",
-      sentence: "Issued by Northfield Digital LLC, a subsidiary of Northfield Bank, N.A., an FDIC-insured bank." },
-    PXD: { name: "Paxlane Dollar", tk: "PXD", art: "A", issuer: "Paxlane",
-      sentence: "Issued by Paxlane Inc., a payments company." },
+    PFD: { name: "Passfield Dollar", tk: "PFD", art: "A", issuer: "Passfield Digital",
+      sentence: "Issued by Passfield Digital LLC, a subsidiary of Passfield Bank, N.A., an FDIC-insured bank." },
+    BRD: { name: "Bricola Dollar", tk: "BRD", art: "A", issuer: "Bricola",
+      sentence: "Issued by Bricola Inc., a payments company." },
     ORD: { name: "Orbit Dollar", tk: "ORD", art: "An", issuer: "Orbit Pay",
       sentence: "Issued by Orbit Pay LLC, a subsidiary of Orbit, a large technology company known for search, devices and cloud services." }
   };
@@ -355,9 +355,9 @@
 
   function buildMain() {
     var arm = D.arm;
-    var walletOrder = shuffle(["NFD", "PXD", "ORD"]);
-    var coinOrder = shuffle(["NFD", "PXD", "ORD"]);
-    var entOrder = shuffle(["NFD", "ORD"]);
+    var walletOrder = shuffle(["PFD", "BRD", "ORD"]);
+    var coinOrder = shuffle(["PFD", "BRD", "ORD"]);
+    var entOrder = shuffle(["PFD", "ORD"]);
     D.wallet_order = walletOrder.join("-");
     D.coin_order = coinOrder.join("-");
     D.ent_order = entOrder.join("-");
@@ -455,14 +455,14 @@
 
     // Entitativity (adapted from Gong et al., 2020, Appendix F: perceived business tie PBT1-3, perceived similarity PS1-3)
     var ENT = {
-      NFD: { reminder: "The Northfield Dollar is issued by Northfield Digital LLC, a subsidiary of Northfield Bank, N.A.",
+      PFD: { reminder: "The Passfield Dollar is issued by Passfield Digital LLC, a subsidiary of Passfield Bank, N.A.",
         items: [
-          ["PBT1", "Northfield Bank is connected to Northfield Digital, the issuer of the Northfield Dollar."],
-          ["PBT2", "Northfield Bank is likely to recommend the Northfield Dollar to its customers."],
-          ["PBT3", "Northfield Bank and Northfield Digital have a business relationship with one another."],
-          ["PS1", "The Northfield Dollar has a lot in common with Northfield Bank's services."],
-          ["PS2", "The Northfield Dollar and Northfield Bank's services are similar."],
-          ["PS3", "Using the Northfield Dollar and using Northfield Bank's services can achieve similar things."]
+          ["PBT1", "Passfield Bank is connected to Passfield Digital, the issuer of the Passfield Dollar."],
+          ["PBT2", "Passfield Bank is likely to recommend the Passfield Dollar to its customers."],
+          ["PBT3", "Passfield Bank and Passfield Digital have a business relationship with one another."],
+          ["PS1", "The Passfield Dollar has a lot in common with Passfield Bank's services."],
+          ["PS2", "The Passfield Dollar and Passfield Bank's services are similar."],
+          ["PS3", "Using the Passfield Dollar and using Passfield Bank's services can achieve similar things."]
         ] },
       ORD: { reminder: "The Orbit Dollar is issued by Orbit Pay LLC, a subsidiary of Orbit, a large technology company known for search, devices and cloud services.",
         items: [
@@ -486,7 +486,7 @@
     });
 
     // Allocation
-    var allocRows = shuffle(["NFD", "PXD", "ORD"]);
+    var allocRows = shuffle(["PFD", "BRD", "ORD"]);
     D.alloc_order = allocRows.join("-");
     var rowsHTML = '<tr><td>My FDIC-insured bank account</td><td class="amt">$ <input type="number" inputmode="numeric" min="0" max="1000" step="1" data-alloc="BANK"></td></tr>' +
       allocRows.map(function (code) {
@@ -529,7 +529,7 @@
       countMissing: function (el) { return allocVals(el).any ? 0 : 1; },
       after: function (el) {
         var a = allocVals(el);
-        ["BANK", "NFD", "PXD", "ORD"].forEach(function (k) {
+        ["BANK", "PFD", "BRD", "ORD"].forEach(function (k) {
           D["HOLD_" + k] = a.any ? (a.vals[k] === null ? 0 : a.vals[k]) : null;
         });
       }
