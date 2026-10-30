@@ -289,14 +289,13 @@
   function consentPage() {
     var yn = [[1, "Yes"], [0, "No"]];
     var info =
-      '<h1>Digital dollars in a payments app</h1>' +
-      '<p class="small">How stablecoin labels and issuer identity affect what people believe protects their money. Philipp Gagel, Department of Management, Information Systems and Innovation Group, London School of Economics and Political Science.</p>' +
+      '<h1>Digital dollars in a wallet app</h1>' +
       '<h2>Information for participants</h2>' +
-      '<p><b>What is the research about?</b> Stablecoins are digital tokens meant to stay worth one US dollar. People may soon see them in apps they already use. I want to understand what people believe about a stablecoin when they see it in an app. The study is funded by the LSE Phelan US Centre. The app, companies and tokens in the study are made up.</p>' +
+      '<p><b>What is the research about?</b> Stablecoins are digital tokens meant to stay worth one US dollar. People may soon see them in apps they already use. I want to understand what people believe about a stablecoin when they see it in an app. The study is run by Philipp Gagel at the London School of Economics (LSE) and funded by the LSE Phelan US Centre. The app, companies and tokens in the study are made up.</p>' +
       '<p><b>Do I have to take part?</b> No. If you decide to take part, please answer Yes to each statement below. You can continue only if you answer Yes to all of them.</p>' +
       '<p><b>What will my involvement be?</b> One online session of about 10 minutes. You will answer questions about how much you trust different organizations, three short questions about money, and questions about a made-up app screen with three made-up tokens. People see slightly different versions of the screen. You will receive the payment shown on Prolific. There is no bonus, and your payment does not depend on your answers.</p>' +
       '<p><b>How do I withdraw?</b> You can stop at any time before you submit by closing the page. You do not have to answer any question you do not want to answer. Once you have submitted, I cannot remove your answers, because the file I analyse does not contain your name.</p>' +
-      '<p><b>What will my information be used for?</b> A PhD thesis, academic publications, a short evidence summary for policymakers, and possible future research. Results will be combined. Anonymised answers will be shared in a public research data repository (the Open Science Framework). I will not put your personal information into a generative AI tool.</p>' +
+      '<p><b>What will my information be used for?</b> A PhD thesis, academic publications, a short evidence summary for policymakers, and possible future research. Results will be combined. Anonymised answers will be shared in a public research data repository. I will not put your personal information into a generative AI tool.</p>' +
       '<p><b>Confidentiality.</b> I will not ask for your name, address or payment details, and your IP address is not stored with your answers. Your Prolific ID is used only to approve payment and is kept separate from your answers. The survey records whether you leave the page while answering some questions, and Prolific runs an automated check that the survey was completed by a person. No other device or location data are collected. Your answers are stored in LSE\'s Qualtrics account and then on LSE OneDrive.</p>' +
       '<p><b>Data protection.</b> LSE Research Privacy Notice: <a href="https://info.lse.ac.uk/staff/divisions/Secretarys-Division/Assets/Documents/Information-Records-Management/Privacy-Notice-for-Research-v1.2.pdf" target="_blank" rel="noopener">link</a>. The legal basis is legitimate interests. To request a copy of your data, contact glpd.info.rights@lse.ac.uk.</p>' +
       '<p><b>Ethics review.</b> This study has undergone ethics review in accordance with the LSE Research Ethics Policy and Procedure.</p>' +
@@ -408,11 +407,12 @@
 
     pages.push({
       id: "intro", button: "Show the app screen",
-      top: '<h1>Stablecoins in a payments app</h1>' +
+      top: '<h1>Stablecoins in a wallet app</h1>' +
         '<div class="box"><p><b>What is a stablecoin?</b> A stablecoin is a digital token designed to always be worth one US dollar. You get stablecoins by paying US dollars to the company that issues them, and you can later exchange them back for US dollars at the same rate. This is called redeeming. Stablecoins are recorded on a blockchain, a shared digital record of who holds which coins.</p>' +
-        '<p><b>How does it work?</b> In an app, a stablecoin balance works much like money in an account: you can hold it, pay with it, or send it to other people within minutes, including outside normal banking hours.</p>' +
+        '<p><b>Why do people use them?</b> Stablecoins can be sent at any time of day, including weekends and holidays, and usually arrive within minutes, often at low cost, also to other countries. Some people use them to pay online or to hold US dollars in digital form.</p>' +
+        '<p><b>How does it work?</b> In an app, a stablecoin balance works much like money in an account: you can hold it, pay with it, or send it to other people.</p>' +
         '<p><b>How is the $1 value kept?</b> For every coin it issues, the issuer is meant to hold assets of at least the same value, for example cash in bank accounts and short-term US government debt. These assets are called reserves. Whether a coin stays worth $1 depends on the issuer holding these reserves and paying out when people redeem.</p></div>' +
-        '<p>Now imagine you use a payments app that has a "Digital dollars" tab. It lists three US dollar stablecoins. The coins and companies are made up. Please read the screen as you would in a real app.</p>'
+        '<p>Now imagine you use a wallet app on your phone that has a "Digital dollars" tab. It lists three US dollar stablecoins. The coins and companies are made up. Please read the screen as you would in a real app.</p>'
     });
 
     pages.push({
