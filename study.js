@@ -2,10 +2,12 @@
   "use strict";
 
   var C = window.RTI_CONFIG;
-  var app = document.getElementById("app");
-  var bar = document.getElementById("progress-bar");
+  var app = document.getElementById("rti-app");
+  var bar = document.getElementById("rti-progress-bar");
   var P = new URLSearchParams(window.location.search);
-  var TEST = P.get("test") === "1";
+  // Set by the Qualtrics question that hosts the study: {arm, pid, study, session, stratum, test, done(record)}.
+  var QX = window.RTI_QUALTRICS || null;
+  var TEST = P.get("test") === "1" || !!(QX && QX.test);
   var PIPE = "https://pipe.jspsych.org/api/";
 
   // ---------- utilities ----------
@@ -36,10 +38,11 @@
   var D = {
     rid: rid(),
     version: C.version,
-    PROLIFIC_PID: P.get("PROLIFIC_PID") || "",
-    STUDY_ID: P.get("STUDY_ID") || "",
-    SESSION_ID: P.get("SESSION_ID") || "",
-    stratum: P.get("stratum") || "unknown",
+    PROLIFIC_PID: (QX && QX.pid) || P.get("PROLIFIC_PID") || "",
+    STUDY_ID: (QX && QX.study) || P.get("STUDY_ID") || "",
+    SESSION_ID: (QX && QX.session) || P.get("SESSION_ID") || "",
+    stratum: (QX && QX.stratum) || P.get("stratum") || "unknown",
+    host: QX ? "qualtrics" : "web",
     test: TEST ? 1 : 0,
     t_start: new Date().toISOString()
   };
@@ -291,13 +294,13 @@
       '<h2>Information for participants</h2>' +
       '<p><b>What is the research about?</b> Stablecoins are digital tokens meant to stay worth one US dollar. People may soon see them in apps they already use. I want to understand what people believe about a stablecoin when they see it in an app. The study is funded by the LSE Phelan US Centre. The app, companies and tokens in the study are made up.</p>' +
       '<p><b>Do I have to take part?</b> No. If you decide to take part, please answer Yes to each statement below. You can continue only if you answer Yes to all of them.</p>' +
-      '<p><b>What will my involvement be?</b> One online session of about 10 minutes. You will answer questions about how much you trust different organizations, three short questions about money, and questions about a made-up app screen with three made-up tokens. People see slightly different versions of the screen. You will receive the payment shown on Prolific (about $12 per hour). There is no bonus, and your payment does not depend on your answers.</p>' +
+      '<p><b>What will my involvement be?</b> One online session of about 10 minutes. You will answer questions about how much you trust different organizations, three short questions about money, and questions about a made-up app screen with three made-up tokens. People see slightly different versions of the screen. You will receive the payment shown on Prolific. There is no bonus, and your payment does not depend on your answers.</p>' +
       '<p><b>How do I withdraw?</b> You can stop at any time before you submit by closing the page. You do not have to answer any question you do not want to answer. Once you have submitted, I cannot remove your answers, because the file I analyse does not contain your name.</p>' +
       '<p><b>What will my information be used for?</b> A PhD thesis, academic publications, a short evidence summary for policymakers, and possible future research. Results will be combined. Anonymised answers will be shared in a public research data repository (the Open Science Framework). I will not put your personal information into a generative AI tool.</p>' +
-      '<p><b>Confidentiality.</b> I will not ask for your name, address or payment details, and your IP address is not stored with your answers. Your Prolific ID is used only to approve payment and is kept separate from your answers. The survey records whether you leave the page while answering some questions, and Prolific runs an automated check that the survey was completed by a person. No other device or location data are collected. Your answers are sent securely to a private, access-restricted project on the Open Science Framework and then stored on LSE OneDrive.</p>' +
+      '<p><b>Confidentiality.</b> I will not ask for your name, address or payment details, and your IP address is not stored with your answers. Your Prolific ID is used only to approve payment and is kept separate from your answers. The survey records whether you leave the page while answering some questions, and Prolific runs an automated check that the survey was completed by a person. No other device or location data are collected. Your answers are stored in LSE\'s Qualtrics account and then on LSE OneDrive.</p>' +
       '<p><b>Data protection.</b> LSE Research Privacy Notice: <a href="https://info.lse.ac.uk/staff/divisions/Secretarys-Division/Assets/Documents/Information-Records-Management/Privacy-Notice-for-Research-v1.2.pdf" target="_blank" rel="noopener">link</a>. The legal basis is legitimate interests. To request a copy of your data, contact glpd.info.rights@lse.ac.uk.</p>' +
       '<p><b>Ethics review.</b> This study has undergone ethics review in accordance with the LSE Research Ethics Policy and Procedure.</p>' +
-      '<p><b>Questions or complaints.</b> Philipp Gagel, ' + C.contactEmail + ', or via Prolific. Concerns about the conduct of the research: research.ethics@lse.ac.uk.</p>' +
+      '<p><b>Questions, concerns or complaints.</b> Please contact Philipp Gagel directly at ' + C.contactEmail + ' or through Prolific.</p>' +
       '<h2>Consent</h2>';
     return {
       id: "consent", top: info, strict: true, button: "Continue",
@@ -320,6 +323,10 @@
 
   function noConsent() {
     finished = true;
+    if (QX && !TEST) {
+      QX.done({ rid: D.rid, consent: 0, PROLIFIC_PID: D.PROLIFIC_PID });
+      return;
+    }
     app.innerHTML = '<div class="panel"><h1>Thank you</h1><p>You have chosen not to take part. None of your answers have been saved. Please return the study on Prolific; you will not be penalised.</p>' +
       '<div class="nav"><button class="next" id="back">Return to Prolific</button></div></div>';
     document.getElementById("back").addEventListener("click", function () {
@@ -331,6 +338,7 @@
   function assignArm() {
     var forced = P.get("arm");
     if (TEST && C.arms.indexOf(forced) >= 0) { D.arm = forced; D.arm_source = "forced"; return Promise.resolve(); }
+    if (QX && C.arms.indexOf(QX.arm) >= 0) { D.arm = QX.arm; D.arm_source = "qualtrics"; return Promise.resolve(); }
     if (TEST || !C.datapipeId) {
       D.arm = C.arms[Math.floor(rand() * C.arms.length)]; D.arm_source = "random_local"; return Promise.resolve();
     }
@@ -400,7 +408,11 @@
 
     pages.push({
       id: "intro", button: "Show the app screen",
-      top: '<h1>The app</h1><p>Imagine you use a payments app that has a "Digital dollars" tab. It lists three US dollar stablecoins. A stablecoin is a digital token meant to stay worth $1. The coins and companies below are made up. Please read the screen as you would in a real app.</p>'
+      top: '<h1>Stablecoins in a payments app</h1>' +
+        '<div class="box"><p><b>What is a stablecoin?</b> A stablecoin is a digital token designed to always be worth one US dollar. You get stablecoins by paying US dollars to the company that issues them, and you can later exchange them back for US dollars at the same rate. This is called redeeming. Stablecoins are recorded on a blockchain, a shared digital record of who holds which coins.</p>' +
+        '<p><b>How does it work?</b> In an app, a stablecoin balance works much like money in an account: you can hold it, pay with it, or send it to other people within minutes, including outside normal banking hours.</p>' +
+        '<p><b>How is the $1 value kept?</b> For every coin it issues, the issuer is meant to hold assets of at least the same value, for example cash in bank accounts and short-term US government debt. These assets are called reserves. Whether a coin stays worth $1 depends on the issuer holding these reserves and paying out when people redeem.</p></div>' +
+        '<p>Now imagine you use a payments app that has a "Digital dollars" tab. It lists three US dollar stablecoins. The coins and companies are made up. Please read the screen as you would in a real app.</p>'
     });
 
     pages.push({
@@ -591,6 +603,11 @@
     derive();
     finished = true;
     bar.style.width = "100%";
+    if (QX && !TEST) {
+      app.innerHTML = '<div class="panel"><p>Saving your answers. Please do not close this page...</p></div>';
+      QX.done(D);
+      return "stop";
+    }
     if (TEST) {
       var blob = new Blob([JSON.stringify(D, null, 1)], { type: "application/json" });
       app.innerHTML = '<div class="panel"><div class="testbar">TEST MODE: nothing was sent. Real participants would now be redirected with code ' + C.completeCode + '.</div>' +
@@ -614,14 +631,14 @@
   }
 
   window.addEventListener("beforeunload", function (e) {
-    if (finished || TEST || idx === 0) return;
+    if (finished || TEST || QX || idx === 0) return;
     e.preventDefault();
     e.returnValue = "";
   });
 
   // ---------- start ----------
   var T0 = Date.now();
-  if (!TEST && !C.datapipeId) {
+  if (!TEST && !QX && !C.datapipeId) {
     app.innerHTML = '<div class="panel"><h1>Not open yet</h1><p>This study is not open yet. Please return it on Prolific; you will not be penalised.</p></div>';
     return;
   }
